@@ -3,6 +3,7 @@ import PublicLayout from "../components/layouts/PublicLayout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import MFSDashboard from "../components/layouts/UserLayout";
 
 const router = createBrowserRouter([
     {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
             }
         ]
     },
+    {
+        path: "/user",
+        element: <MFSDashboard/>,
+    }
     
 ]);
 
