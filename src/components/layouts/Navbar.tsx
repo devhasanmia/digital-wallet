@@ -80,7 +80,7 @@ const Navbar: React.FC = () => {
                     {/* Mobile menu button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className={`md:hidden p-2 rounded-lg transition-colors duration-200 ${isScrolled ? 'text-gray-700' : 'text-white'
+                        className={`md:hidden p-2 rounded-lg transition-colors duration-200 ${isScrolled ? 'text-gray-700' : 'text-gray-700'
                             }`}
                     >
                         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -90,7 +90,7 @@ const Navbar: React.FC = () => {
                 {/* Mobile Navigation */}
                 {isOpen && (
                     <div className="md:hidden">
-                        <div className="px-2 pt-2 pb-3 space-y-1 bg-white rounded-lg mt-2 shadow-lg">
+                        <div className="px-4 pt-4 pb-5 space-y-1 bg-white rounded-lg mt-5 shadow-lg">
                             {navigationItems.map((item) => (
                                 <Link
                                     key={item.name}
