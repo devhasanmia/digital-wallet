@@ -3,11 +3,16 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import LabeledInput from "../components/ui/InputWithLabel";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { Link } from "react-router";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type LoginFormInputs = {
-  email: string;
-  password: string;
-};
+// ✅ Zod Schema
+const loginSchema = z.object({
+  email: z.string().email("Enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const {
@@ -15,7 +20,9 @@ const Login = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<LoginFormInputs>();
+  } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
     console.log("Login Data:", data);
@@ -57,7 +64,7 @@ const Login = () => {
             placeholder="Enter your Email"
             icon={<Mail />}
             register={register}
-            error={errors.email}
+            error={errors.email?.message} // ✅ এখন error message string যাবে
           />
 
           <LabeledInput
@@ -67,7 +74,7 @@ const Login = () => {
             placeholder="Enter your Password"
             icon={<Lock />}
             register={register}
-            error={errors.password}
+            error={errors.password?.message}
           />
 
           {/* Remember me & Forgot password */}
@@ -83,10 +90,12 @@ const Login = () => {
               Forgot password?
             </a>
           </div>
+
           {/* Submit Button */}
           <PrimaryButton type="submit" icon={<Lock />}>
             Login
           </PrimaryButton>
+
           <p className="text-xs text-center text-gray-500 dark:text-gray-400">
             Try our demo accounts for quick access
           </p>
@@ -116,13 +125,13 @@ const Login = () => {
             </button>
           </div>
 
-
-
-
           {/* Register Link */}
           <p className="text-center text-sm text-gray-600 dark:text-gray-400">
             Don’t have an account?{" "}
-            <Link to="/register" className="text-blue-600 hover:underline font-medium">
+            <Link
+              to="/register"
+              className="text-blue-600 hover:underline font-medium"
+            >
               Register
             </Link>
           </p>

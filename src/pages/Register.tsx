@@ -3,21 +3,34 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import LabeledInput from "../components/ui/InputWithLabel";
 import { Link } from "react-router";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type RegisterFormInputs = {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-  role: "user" | "agent";
-};
+// ✅ Zod Schema
+const registerSchema = z.object({
+  name: z.string({ error: 'Name is required' }).min(1, { error: 'Name is required' }),
+  email: z.email({ error: 'Invalid email address' }).min(1, { error: 'Email is required' }),
+  phone: z
+    .string({ error: 'Phone is required' })
+    .min(1, { error: 'Phone is required' })
+    .regex(/^01\d{9}$/, { error: 'Phone number must be 11 digits and start with 01' }),
+  password: z.string({ error: 'Password is required' })
+    .min(6, { error: 'Password must be at least 6 characters long' }),
+  role: z.enum(['user', 'agent'], {
+    error: "Role must be one of 'user', 'agent'",
+  }),
+});
+
+type RegisterFormInputs = z.infer<typeof registerSchema>;
 
 const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormInputs>();
+  } = useForm<RegisterFormInputs>({
+    resolver: zodResolver(registerSchema),
+  });
 
   const onSubmit: SubmitHandler<RegisterFormInputs> = (data) => {
     console.log("Registration Data:", data);
@@ -45,7 +58,7 @@ const Register = () => {
             placeholder="Enter your Name"
             icon={<User />}
             register={register}
-            error={errors.name}
+            error={errors.name?.message}
           />
 
           <LabeledInput
@@ -55,7 +68,7 @@ const Register = () => {
             placeholder="Enter your Email"
             icon={<Mail />}
             register={register}
-            error={errors.email}
+            error={errors.email?.message}
           />
 
           <LabeledInput
@@ -65,7 +78,7 @@ const Register = () => {
             placeholder="Enter your Phone"
             icon={<Phone />}
             register={register}
-            error={errors.phone}
+            error={errors.phone?.message}
           />
 
           <LabeledInput
@@ -75,7 +88,7 @@ const Register = () => {
             placeholder="Enter your Password"
             icon={<Lock />}
             register={register}
-            error={errors.password}
+            error={errors.password?.message}
           />
 
           {/* Role Selection */}
@@ -94,6 +107,9 @@ const Register = () => {
                 <option value="agent">Agent</option>
               </select>
             </div>
+            {errors.role && (
+              <p className="text-red-500 text-xs mt-1">{errors.role.message}</p>
+            )}
           </div>
 
           <PrimaryButton type="submit" icon={<ShieldCheck />}>
@@ -102,7 +118,10 @@ const Register = () => {
 
           <p className="text-center text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline font-medium">
+            <Link
+              to="/login"
+              className="text-blue-600 hover:underline font-medium"
+            >
               Login
             </Link>
           </p>

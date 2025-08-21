@@ -1,9 +1,11 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import axiosBaseQuery from "../axiosBaseQuery";
 
 export const RootApi = createApi({
   reducerPath: "RootApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://pokeapi.co/api/v2/" }),
+  baseQuery: axiosBaseQuery(),
+  tagTypes: ["user"],
   endpoints: () => ({}),
 });
 
-export const {} = RootApi;
+
