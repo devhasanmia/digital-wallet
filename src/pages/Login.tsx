@@ -1,6 +1,40 @@
 import { Mail, Lock } from "lucide-react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import LabeledInput from "../components/ui/InputWithLabel";
+import PrimaryButton from "../components/ui/PrimaryButton";
+import { Link } from "react-router";
+
+type LoginFormInputs = {
+  email: string;
+  password: string;
+};
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<LoginFormInputs>();
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
+    console.log("Login Data:", data);
+    // Handle login logic here (API call, auth, etc.)
+  };
+
+  const fillDemoCredentials = (type: "user" | "agent" | "admin") => {
+    if (type === "user") {
+      setValue("email", "user@example.com");
+      setValue("password", "user1234");
+    } else if (type === "agent") {
+      setValue("email", "agent@example.com");
+      setValue("password", "agent1234");
+    } else if (type === "admin") {
+      setValue("email", "admin@example.com");
+      setValue("password", "admin1234");
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
       <div className="w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
@@ -15,44 +49,26 @@ const Login = () => {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter your Email"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none shadow-sm"
-              />
-            </div>
-          </div>
+        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+          <LabeledInput
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="Enter your Email"
+            icon={<Mail />}
+            register={register}
+            error={errors.email}
+          />
 
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter your Password"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none shadow-sm"
-              />
-            </div>
-          </div>
+          <LabeledInput
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="Enter your Password"
+            icon={<Lock />}
+            register={register}
+            error={errors.password}
+          />
 
           {/* Remember me & Forgot password */}
           <div className="flex items-center justify-between text-sm">
@@ -67,22 +83,48 @@ const Login = () => {
               Forgot password?
             </a>
           </div>
-
-          {/* Login button */}
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg transition flex items-center justify-center gap-2"
-          >
-            <Lock className="w-5 h-5" />
+          {/* Submit Button */}
+          <PrimaryButton type="submit" icon={<Lock />}>
             Login
-          </button>
+          </PrimaryButton>
+          <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+            Try our demo accounts for quick access
+          </p>
 
-          {/* Register link */}
+          {/* Demo buttons */}
+          <div className="flex gap-2 mt-2">
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("user")}
+              className="flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-lg transition"
+            >
+              Demo User
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("agent")}
+              className="flex-1 py-2 px-4 bg-green-500 hover:bg-green-600 text-white text-sm rounded-lg transition"
+            >
+              Demo Agent
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("admin")}
+              className="flex-1 py-2 px-4 bg-gray-700 hover:bg-gray-800 text-white text-sm rounded-lg transition"
+            >
+              Demo Admin
+            </button>
+          </div>
+
+
+
+
+          {/* Register Link */}
           <p className="text-center text-sm text-gray-600 dark:text-gray-400">
             Don’t have an account?{" "}
-            <a href="#" className="text-blue-600 hover:underline font-medium">
+            <Link to="/register" className="text-blue-600 hover:underline font-medium">
               Register
-            </a>
+            </Link>
           </p>
         </form>
       </div>

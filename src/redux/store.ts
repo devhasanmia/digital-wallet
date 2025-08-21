@@ -1,7 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { RootApi } from './services/RootApi'
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    auth: RootApi.reducer
+  },
 })
 
 export type RootState = ReturnType<typeof store.getState>
