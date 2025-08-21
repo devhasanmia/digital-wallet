@@ -5,6 +5,8 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import MFSDashboard from "../components/layouts/UserLayout";
 import UserLay from "../components/layouts/UserLay";
+import AgentDashboard from "../components/layouts/AgentDashboard";
+import AdminDashboard from "../components/layouts/AdminLayout";
 
 const router = createBrowserRouter([
     {
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
     {
         path: "/users",
         element: <UserLay/>,
+    },
+    {
+        path: "/agent",
+        element: <AgentDashboard/>
+    },
+    {
+        path: "/admin",
+        element: <AdminDashboard/>
     }
     
 ]);

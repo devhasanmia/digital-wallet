@@ -218,21 +218,7 @@ const chartData = [
       </header>
 
       {/* Content */}
-      <main className="max-w-6xl mx-auto px-4 md:px-6 py-6 pb-28">
-        {!authed ? (
-          <LoginScreen onLogin={() => setAuthed(true)} />
-        ) : tab === "home" ? (
-          <DashboardScreen transactions={transactions} />
-        ) : tab === "transactions" ? (
-          <TransactionsScreen transactions={transactions} />
-        ) : tab === "send" ? (
-          <SendMoneyFlow onAddTx={(t) => setTransactions((prev) => [t, ...prev])} />
-        ) : tab === "offers" ? (
-          <OffersScreen />
-        ) : (
-          <ProfileScreen />
-        )}
-      </main>
+      
 
       {/* Bottom Nav */}
       {authed && <BottomNav tab={tab} onChange={setTab} />}
