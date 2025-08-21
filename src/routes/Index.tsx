@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import MFSDashboard from "../components/layouts/UserLayout";
+import UserLay from "../components/layouts/UserLay";
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     {
         path: "/user",
         element: <MFSDashboard/>,
+    },
+    {
+        path: "/users",
+        element: <UserLay/>,
     }
     
 ]);
