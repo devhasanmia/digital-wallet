@@ -38,9 +38,9 @@ const Register = () => {
   const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
     try {
       const res = await registration(data).unwrap()
-      toast.success(res?.message)
+      toast.success(res?.message || "Registration successful!");
     } catch (error: any) {
-      toast.error(error?.data?.message)
+      toast.error(error?.data?.message || "Registration failed. Please try again.");
     }
   };
 

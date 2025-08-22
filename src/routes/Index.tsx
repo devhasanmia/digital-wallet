@@ -7,43 +7,47 @@ import MFSDashboard from "../components/layouts/UserLayout";
 import UserLay from "../components/layouts/UserLay";
 import AgentDashboard from "../components/layouts/AgentDashboard";
 import AdminDashboard from "../components/layouts/AdminLayout";
+import ProtectedRoute from "../components/layouts/ProtecctedRoute";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <PublicLayout/>,
+        element: <PublicLayout />,
         children: [
             {
                 path: "",
-                element: <Home/>
+                element: <Home />
             },
             {
                 path: "login",
-                element: <Login/>
+                element: <Login />
             },
             {
                 path: "register",
-                element: <Register/>
+                element: <Register />
             }
         ]
     },
     {
         path: "/user",
-        element: <MFSDashboard/>,
+        element: <MFSDashboard />,
     },
     {
         path: "/users",
-        element: <UserLay/>,
+        element: <ProtectedRoute role="user">
+            <UserLay />
+        </ProtectedRoute>
+
     },
     {
         path: "/agent",
-        element: <AgentDashboard/>
+        element: <AgentDashboard />
     },
     {
         path: "/admin",
-        element: <AdminDashboard/>
+        element: <AdminDashboard />
     }
-    
+
 ]);
 
 

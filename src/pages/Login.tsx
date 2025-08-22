@@ -35,9 +35,9 @@ const Login = () => {
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
       const res = await login(data).unwrap();
-      toast.success(res?.message)
+      toast.success(res?.message || "Login successful!");
     } catch (error: any) {
-      toast.error(error?.data?.message)
+      toast.error(error?.data?.message || "Login failed. Please try again.");
     }
   };
 
