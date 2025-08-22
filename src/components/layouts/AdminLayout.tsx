@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { ResponsiveContainer, BarChart, Bar, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Bell, User, Users, UserCheck, ListChecks, DollarSign, Settings, SlidersHorizontal, Search, X as CloseIcon, ChevronLeft, ChevronRight, Menu, MoreVertical } from "lucide-react";
 
 // --- Type Definitions for TypeScript ---
