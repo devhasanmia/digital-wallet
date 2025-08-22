@@ -5,8 +5,9 @@ import LabeledInput from "../components/ui/InputWithLabel";
 import { Link } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRegisterMutation } from "../redux/features/auth/authApi";
+import { toast } from "sonner";
 
-// ✅ Zod Schema
 const registerSchema = z.object({
   name: z.string({ error: 'Name is required' }).min(1, { error: 'Name is required' }),
   email: z.email({ error: 'Invalid email address' }).min(1, { error: 'Email is required' }),
@@ -32,9 +33,15 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit: SubmitHandler<RegisterFormInputs> = (data) => {
-    console.log("Registration Data:", data);
-    // Handle register logic
+  const [registration] = useRegisterMutation()
+
+  const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
+    try {
+      const res = await registration(data).unwrap()
+      toast.success(res?.message)
+    } catch (error: any) {
+      toast.error(error?.data?.message)
+    }
   };
 
   return (

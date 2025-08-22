@@ -1,15 +1,21 @@
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, Phone } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import LabeledInput from "../components/ui/InputWithLabel";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { Link } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLoginMutation } from "../redux/features/auth/authApi";
+import { toast } from "sonner";
 
-// ✅ Zod Schema
+
 const loginSchema = z.object({
-  email: z.string().email("Enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
+  phone: z
+    .string({ error: 'Phone is required' })
+    .min(1, { error: 'Phone is required' })
+    .regex(/^01\d{9}$/, { error: 'Phone number must be 11 digits and start with 01' }),
+  password: z.string({ error: 'Password is required' })
+    .min(6, { error: 'Password must be at least 6 characters long' }),
 });
 
 type LoginFormInputs = z.infer<typeof loginSchema>;
@@ -24,20 +30,26 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    console.log("Login Data:", data);
-    // Handle login logic here (API call, auth, etc.)
+  const [login] = useLoginMutation();
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    try {
+      const res = await login(data).unwrap();
+      toast.success(res?.message)
+    } catch (error: any) {
+      toast.error(error?.data?.message)
+    }
   };
 
   const fillDemoCredentials = (type: "user" | "agent" | "admin") => {
     if (type === "user") {
-      setValue("email", "user@example.com");
+      setValue("phone", "user@example.com");
       setValue("password", "user1234");
     } else if (type === "agent") {
-      setValue("email", "agent@example.com");
+      setValue("phone", "agent@example.com");
       setValue("password", "agent1234");
     } else if (type === "admin") {
-      setValue("email", "admin@example.com");
+      setValue("phone", "admin@example.com");
       setValue("password", "admin1234");
     }
   };
@@ -58,13 +70,13 @@ const Login = () => {
         {/* Form */}
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
           <LabeledInput
-            label="Email"
-            name="email"
-            type="email"
-            placeholder="Enter your Email"
-            icon={<Mail />}
+            label="Phone"
+            name="phone"
+            type="phone"
+            placeholder="Enter your Phone"
+            icon={<Phone />}
             register={register}
-            error={errors.email?.message} // ✅ এখন error message string যাবে
+            error={errors.phone?.message}
           />
 
           <LabeledInput
