@@ -17,8 +17,16 @@ export const AuthApi = RootApi.injectEndpoints({
                 data: data
             }),
             invalidatesTags: ["user"]
+        }),
+        profile: builder.query({
+            query: () => ({
+                url: "/user/profile",
+                method: "GET",
+            }),
+            providesTags: ["user"]
         })
+
     }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = AuthApi;
+export const { useRegisterMutation, useLoginMutation, useProfileQuery } = AuthApi;

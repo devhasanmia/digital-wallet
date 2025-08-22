@@ -4,10 +4,12 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import MFSDashboard from "../components/layouts/UserLayout";
-import UserLay from "../components/layouts/UserLay";
 import AgentDashboard from "../components/layouts/AgentDashboard";
 import AdminDashboard from "../components/layouts/AdminLayout";
 import ProtectedRoute from "../components/layouts/ProtecctedRoute";
+import AccessDenied from "../pages/AccessDenied";
+import UserLayout from "../components/layouts/UserLayout";
+import NewUserLayout from "../components/layouts/NewUserLayout";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: "register",
                 element: <Register />
+            },
+            {
+                path: "access-denied",
+                element: <AccessDenied />
             }
         ]
     },
@@ -35,8 +41,13 @@ const router = createBrowserRouter([
     {
         path: "/users",
         element: <ProtectedRoute role="user">
-            <UserLay />
+            <UserLayout />
         </ProtectedRoute>
+
+    },
+    {
+        path: "/new-user",
+        element: <NewUserLayout />,
 
     },
     {
