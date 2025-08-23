@@ -9,7 +9,6 @@ import AdminDashboard from "../components/layouts/AdminLayout";
 import ProtectedRoute from "../components/layouts/ProtecctedRoute";
 import AccessDenied from "../pages/AccessDenied";
 import UserLayout from "../components/layouts/UserLayout";
-import NewUserLayout from "../components/layouts/NewUserLayout";
 
 const router = createBrowserRouter([
     {
@@ -43,11 +42,6 @@ const router = createBrowserRouter([
         element: <ProtectedRoute role="user">
             <UserLayout />
         </ProtectedRoute>
-
-    },
-    {
-        path: "/new-user",
-        element: <NewUserLayout />,
 
     },
     {

@@ -1,5 +1,4 @@
 import React from "react";
-import AuthNavbar from "./AuthNavbar";
 
 type BalanceCardProps = {
   watermark?: string;
@@ -40,8 +39,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
         <div>
           <p className="text-lg font-medium opacity-70">Balance</p>
           <p className="text-4xl sm:text-5xl font-bold tracking-tighter mt-1 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
-            {currency}
-            {balance}
+            {currency} {balance} BDT
           </p>
         </div>
 

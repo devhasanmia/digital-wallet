@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children, role }: TProtectedRoute) => {
         refetchOnMountOrArgChange: true,
     });
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return null;
 
     if (!user) {
         return <Navigate to="/login" replace />;

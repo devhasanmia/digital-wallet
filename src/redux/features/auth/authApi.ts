@@ -24,9 +24,24 @@ export const AuthApi = RootApi.injectEndpoints({
                 method: "GET",
             }),
             providesTags: ["user"]
+        }),
+        wallet: builder.query({
+            query: () => ({
+                url: "/wallet",
+                method: "GET",
+            }),
+            providesTags: ["wallet"]
+        }),
+        sendMoney: builder.mutation({
+            query: (data) => ({
+                url: "/wallet/send-money",
+                method: "POST",
+                data: data
+            }),
+            invalidatesTags: ["wallet"]
         })
 
     }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useProfileQuery } = AuthApi;
+export const { useRegisterMutation, useLoginMutation, useProfileQuery, useWalletQuery, useSendMoneyMutation } = AuthApi;

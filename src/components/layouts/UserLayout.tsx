@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, type JSX } from "react";
 import Joyride, { STATUS } from 'react-joyride';
 import {
   ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell,
@@ -9,9 +9,14 @@ import {
   Wifi,
   Cpu
 } from "lucide-react";
-import { Link } from "react-router";
 import BalanceCard from "../ui/BalanceCard";
-import AuthNavbar from "../ui/AuthNavbar";
+import Header from "../ui/Header";
+import { useProfileQuery, useWalletQuery } from "../../redux/features/auth/authApi";
+import BalanceCardSkeleton from "../Skeleton/BalanceCardSkeleton";
+import HeaderSkeleton from "../Skeleton/HeaderSkeleton";
+import TransactionHistory from "../ui/TransactionsTable";
+import QuickActions from "../ui/QuickActions";
+import SendMoneyForm from "../ui/SendMoney";
 
 // --- Mock Data ---
 const allTransactions = [
@@ -37,60 +42,24 @@ const expenseData = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF"];
 
 // --- Helper Function ---
-const getTransactionIcon = (type) => {
-  const iconMap = {
+type TransactionType = "Deposit" | "Payment" | "Send Money" | "Received" | "Withdraw";
+
+const getTransactionIcon = (type: TransactionType | string) => {
+  const iconMap: Record<TransactionType, JSX.Element> = {
     "Deposit": <Download size={20} className="text-cyan-600" />,
     "Payment": <Receipt size={20} className="text-orange-600" />,
     "Send Money": <Send size={20} className="text-rose-600" />,
     "Received": <DollarSign size={20} className="text-emerald-600" />,
     "Withdraw": <Upload size={20} className="text-red-600" />,
   };
-  const colorMap = {
+  const colorMap: Record<TransactionType, string> = {
     "Deposit": "bg-cyan-100 dark:bg-cyan-900/50", "Payment": "bg-orange-100 dark:bg-orange-900/50",
     "Send Money": "bg-rose-100 dark:bg-rose-900/50", "Received": "bg-emerald-100 dark:bg-emerald-900/50",
     "Withdraw": "bg-red-100 dark:bg-red-900/50",
   };
   return (
-    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${colorMap[type] || 'bg-gray-100 dark:bg-gray-700'}`}>
-      {iconMap[type] || <DollarSign size={20} className="text-gray-600" />}
-    </div>
-  );
-};
-
-// --- Child Components ---
-
-<>
-  // --- Child Components ---
-  <><BalanceCard
-    watermark="Admin"
-    balance={24562.0}
-    currency="$"
-    provider="Digital Wallet" /><BalanceCard
-      watermark="Agent"
-      balance={1000}
-      currency="৳"
-      provider="bKash" /></></>
-
-
-const QuickActions = () => {
-  const actions = [
-    { icon: <Send size={24} />, label: "Send Money", color: "text-blue-500" },
-    { icon: <Download size={24} />, label: "Cash-in", color: "text-green-500" },
-    { icon: <Upload size={24} />, label: "Cash-out", color: "text-red-500" },
-    { icon: <FileText size={24} />, label: "Pay Bill", color: "text-orange-500" },
-    { icon: <CreditCard size={24} />, label: "Payment", color: "text-purple-500" },
-  ];
-  return (
-    <div id="quick-actions" className="mb-8">
-      <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Quick Actions</h3>
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
-        {actions.map(action => (
-          <button key={action.label} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-            <div className={action.color}>{action.icon}</div>
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{action.label}</span>
-          </button>
-        ))}
-      </div>
+    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${colorMap[type as TransactionType] || 'bg-gray-100 dark:bg-gray-700'}`}>
+      {iconMap[type as TransactionType] || <DollarSign size={20} className="text-gray-600" />}
     </div>
   );
 };
@@ -121,7 +90,7 @@ const ExpensePieChart = () => (
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie data={expenseData} cx="50%" cy="50%" labelLine={false} outerRadius={100} fill="#8884d8" dataKey="value" nameKey="name">
-            {expenseData.map((entry, index) => (<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />))}
+            {expenseData.map((_entry, index) => (<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />))}
           </Pie>
           <Tooltip />
           <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
@@ -130,47 +99,15 @@ const ExpensePieChart = () => (
     </div>
   </div>
 );
-const TransactionHistory = ({ transactions, filterType, setFilterType, dateRange, setDateRange, currentPage, setCurrentPage, totalPages, filteredLength }) => (
-  <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-    <h3 className="font-bold text-lg mb-4 text-gray-800 dark:text-gray-100">Transaction History</h3>
-    <div id="transaction-filters" className="flex flex-col sm:flex-row sm:flex-wrap gap-4 items-center mb-4 p-2 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
-      {/* Filter Implementation Here */}
-    </div>
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm min-w-[600px]">
-        <thead className="text-left text-gray-500 dark:text-gray-400">
-          <tr className="border-b dark:border-gray-700"><th className="p-3 font-semibold">Details</th><th className="p-3 font-semibold">Type</th><th className="p-3 font-semibold">Date</th><th className="p-3 font-semibold text-right">Amount</th></tr>
-        </thead>
-        <tbody>
-          {transactions.map((t) => (
-            <tr key={t.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-              <td className="p-3 font-medium text-gray-800 dark:text-gray-100 flex items-center gap-3">{getTransactionIcon(t.type)}<span>{t.name}</span></td>
-              <td className="p-3 text-gray-600 dark:text-gray-300">{t.type}</td>
-              <td className="p-3 text-gray-600 dark:text-gray-400">{t.date}</td>
-              <td className={`p-3 text-right font-bold ${t.amount > 0 ? "text-green-600 dark:text-green-400" : "text-gray-800 dark:text-gray-100"}`}>
-                {t.amount > 0 ? `+ $${t.amount.toFixed(2)}` : `- $${Math.abs(t.amount).toFixed(2)}`}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    {/* Pagination Implementation Here */}
-  </div>
-);
+
 
 
 // --- Main Dashboard Component ---
 export default function Dashboard() {
   const [isDarkMode, setDarkMode] = useState(false);
-  const [filterType, setFilterType] = useState("");
-  const [dateRange, setDateRange] = useState({ start: "", end: "" });
-  const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 5;
 
   // --- Joyride State and Steps ---
   const [runTour, setRunTour] = useState(false);
-
   const tourSteps = [
     { target: 'body', content: 'Welcome to nPay! Let us guide you through the key features.', placement: 'center' },
     { target: '#balance-card', content: 'Here you can see your total available balance at a glance.' },
@@ -180,6 +117,7 @@ export default function Dashboard() {
     { target: '#theme-toggle', content: 'Switch between light and dark mode for your comfort.' },
   ];
 
+
   // --- Joyride Logic ---
   useEffect(() => {
     const tourHasBeenSeen = localStorage.getItem('nPayTourCompleted');
@@ -188,7 +126,7 @@ export default function Dashboard() {
     }
   }, []);
 
-  const handleJoyrideCallback = (data) => {
+  const handleJoyrideCallback = (data: any) => {
     const { status } = data;
     const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
     if (finishedStatuses.includes(status)) {
@@ -198,8 +136,6 @@ export default function Dashboard() {
   };
 
   const restartTour = () => {
-    // A trick to restart the tour: set run to false, then true in a timeout.
-    // This ensures Joyride detects the state change.
     setRunTour(false);
     setTimeout(() => {
       localStorage.removeItem('nPayTourCompleted');
@@ -207,21 +143,9 @@ export default function Dashboard() {
     }, 300);
   };
 
-  // --- Memoized calculations for transactions ---
-  const filteredTransactions = useMemo(() => {
-    return allTransactions
-      .filter((t) => (filterType ? t.type === filterType : true))
-      .filter((t) => dateRange.start ? new Date(t.date) >= new Date(dateRange.start) : true)
-      .filter((t) => dateRange.end ? new Date(t.date) <= new Date(dateRange.end) : true);
-  }, [filterType, dateRange]);
-
-  const paginatedTransactions = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredTransactions.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredTransactions, currentPage]);
-
-  const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);
-
+  const { data: profile, isLoading: profileLoading } = useProfileQuery("");
+  const username = profile?.data?.name;
+  const { data: wallet, isLoading: walletLoading } = useWalletQuery("");
   return (
     <div className={isDarkMode ? 'dark' : ''}>
       <Joyride
@@ -247,26 +171,32 @@ export default function Dashboard() {
 
       <div className="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans">
         <div className="max-w-7xl mx-auto p-4 sm:p-8">
-
-          {/* <Header isDarkMode={isDarkMode} setDarkMode={setDarkMode} onRestartTour={restartTour} /> */}
-          <BalanceCard />
-          <QuickActions />
-
+          {profileLoading ? (
+            <HeaderSkeleton />
+          ) : (
+            <Header isDarkMode={isDarkMode} setDarkMode={setDarkMode} onRestartTour={restartTour} />
+          )}
+          {/* Balance Card */}
+          {
+            walletLoading ? (
+              <BalanceCardSkeleton />
+            ) : (
+              <BalanceCard balance={wallet?.data?.balance} currency="৳" provider="Digital Wallet" watermark={username} />
+            )
+          }
+          {/* Quick Actions */}
+          <QuickActions show={["send"]} modals={{
+            send: (
+              <SendMoneyForm />
+            )
+          }} />
           <div id="charts-section" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div className="lg:col-span-2"><SpendingChart /></div>
             <div className="lg:col-span-1"><ExpensePieChart /></div>
           </div>
 
           <TransactionHistory
-            transactions={paginatedTransactions}
-            filterType={filterType}
-            setFilterType={setFilterType}
-            dateRange={dateRange}
-            setDateRange={setDateRange}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            totalPages={totalPages}
-            filteredLength={filteredTransactions.length}
+            transactions={allTransactions}
           />
         </div>
       </div>
