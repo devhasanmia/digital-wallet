@@ -12,6 +12,8 @@ import TransactionHistory from "../ui/TransactionsTable";
 import QuickActions from "../ui/QuickActions";
 import SendMoneyForm from "../ui/SendMoney";
 import WithdrawForm from "../ui/WithdrawForm";
+import ChartCard from "../ui/ChartCard";
+import { computeExpenseData, computeWeeklyData } from "../../utils/chartUtils";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF"];
 
@@ -21,63 +23,46 @@ export default function Dashboard() {
     const [runTour, setRunTour] = useState(false);
 
     useEffect(() => {
-        if (!localStorage.getItem('nPayTourCompleted')) setRunTour(true);
+        if (!localStorage.getItem('digitalWalletTourCompleted')) setRunTour(true);
     }, []);
 
     const handleJoyrideCallback = (data: any) => {
         if ([STATUS.FINISHED, STATUS.SKIPPED].includes(data.status)) {
             setRunTour(false);
-            localStorage.setItem('nPayTourCompleted', 'true');
+            localStorage.setItem('digitalWalletTourCompleted', 'true');
         }
     };
 
     const restartTour = () => {
         setRunTour(false);
         setTimeout(() => {
-            localStorage.removeItem('nPayTourCompleted');
+            localStorage.removeItem('digitalWalletTourCompleted');
             setRunTour(true);
         }, 300);
     };
 
     const { data: profile, isLoading: profileLoading } = useProfileQuery("");
     const username = profile?.data?.name || "";
+    const accountType = profile?.data?.role;
     const { data: wallet, isLoading: walletLoading } = useWalletQuery("");
     const { data: transactions } = useGetMytransactionsQuery("");
 
-    // --- Weekly Chart Data ---
     const weeklyChartData = React.useMemo(() => {
         if (!transactions?.data) return [];
-        const data: Record<string, { income: number; expense: number }> = {};
-        transactions.data.forEach((tx: { createdAt: string | number | Date; type: string; from: { name: any; }; amount: number; }) => {
-            const date = new Date(tx.createdAt).toLocaleDateString('en-US', { weekday: 'short' });
-            if (!data[date]) data[date] = { income: 0, expense: 0 };
-            const outgoing = tx.type === 'send_money' ? tx.from.name === username : tx.type === 'withdraw';
-            if (outgoing) data[date].expense += tx.amount;
-            else data[date].income += tx.amount;
-        });
-        return Object.entries(data).map(([day, val]) => ({ name: day, ...val }));
+        return computeWeeklyData(transactions.data, username);
     }, [transactions, username]);
 
-    // --- Expense Pie Data ---
     const expenseData = React.useMemo(() => {
         if (!transactions?.data) return [];
-        const categories: Record<string, number> = {};
-        transactions.data.forEach((tx: { type: string; from: { name: any; }; note: string; amount: number; }) => {
-            const outgoing = tx.type === 'send_money' ? tx.from.name === username : tx.type === 'withdraw';
-            if (outgoing) {
-                const category = tx.note || "Other";
-                categories[category] = (categories[category] || 0) + tx.amount;
-            }
-        });
-        return Object.entries(categories).map(([name, value]) => ({ name, value }));
-    }, [transactions, username]);
+        return computeExpenseData(transactions.data);
+    }, [transactions]);
 
     return (
         <div className={isDarkMode ? 'dark' : ''}>
             <Joyride
                 run={runTour}
                 steps={[
-                    { target: 'body', content: 'Welcome to nPay!', placement: 'center' },
+                    { target: 'body', content: 'Welcome to Digital Wallet!', placement: 'center' },
                     { target: '#balance-card', content: 'Your balance overview' },
                     { target: '#quick-actions', content: 'Quick actions' },
                     { target: '#charts-section', content: 'Income & Expenses charts' },
@@ -99,80 +84,28 @@ export default function Dashboard() {
                     }
 
                     {/* Balance Card */}
-                    {walletLoading ? <BalanceCardSkeleton /> :
-                        <BalanceCard
-                            balance={wallet?.data?.balance}
-                            currency="৳"
-                            provider="Digital Wallet"
-                            watermark={username}
-                        />
-                    }
+                    {walletLoading ? (
+                        <BalanceCardSkeleton />
+                    ) : (
+                        <BalanceCard balance={wallet?.data?.balance} currency="৳" provider="Digital Wallet" accountType={accountType} watermark={username} />
+                    )}
 
                     {/* Quick Actions */}
                     <QuickActions
-                        show={["send", "withdraw"]}
+                        show={["cashin", "withdraw"]}
                         modals={{
                             send: <SendMoneyForm />,
-                            withdraw: <WithdrawForm />
+                            cashin: <WithdrawForm />
                         }}
                     />
                     {/* Charts */}
-                    <div id="charts-section" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        {/* Weekly Spending Bar */}
-                        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 h-72">
-                            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm sm:text-base">Weekly Spending</h3>
-                            <ResponsiveContainer width="100%" height="90%">
-                                <BarChart data={weeklyChartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
-                                    <XAxis dataKey="name" tick={{ fill: '#6b7280', fontSize: 12 }} />
-                                    <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
-                                    <Tooltip />
-                                    <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
-                                    <Bar dataKey="income" fill="#10b981" radius={[4, 4, 0, 0]} barSize={10} />
-                                    <Bar dataKey="expense" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={10} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-
-                        {/* Expense Pie Chart */}
-                        <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 h-72">
-                            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm sm:text-base">Expense Breakdown</h3>
-                            <ResponsiveContainer width="100%" height="85%">
-                                <PieChart>
-                                    <Pie
-                                        data={expenseData}
-                                        cx="50%"
-                                        cy="50%"
-                                        dataKey="value"
-                                        nameKey="name"
-                                        outerRadius={70}
-                                        innerRadius={40}
-                                        label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                                        labelLine={false}
-                                    >
-                                        {expenseData.map((_entry: any, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip
-                                        formatter={(value: number) => `৳${value.toFixed(2)}`}
-                                        contentStyle={{ backgroundColor: 'rgba(255,255,255,0.9)', border: '1px solid #ddd', color: '#000' }}
-                                    />
-                                    <Legend
-                                        iconSize={10}
-                                        layout="vertical"
-                                        verticalAlign="middle"
-                                        align="right"
-                                        wrapperStyle={{ fontSize: '0.75rem', color: '#6b7280' }}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
+                    <div id="charts-section" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <ChartCard title="Weekly Spending" type="bar" data={weeklyChartData} dataKey="amount" />
+                        <ChartCard title="Expense Breakdown" type="pie" data={expenseData} dataKey="value" nameKey="name" />
                     </div>
 
                     {/* Transaction History */}
                     <TransactionHistory transactions={transactions?.data || []} currentUserName={username} />
-
                 </div>
             </div>
         </div>

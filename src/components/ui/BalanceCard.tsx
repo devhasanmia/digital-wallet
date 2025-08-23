@@ -5,6 +5,7 @@ type BalanceCardProps = {
   balance: number | string;
   currency?: string;
   provider?: string;
+  accountType?: string;
 };
 
 const BalanceCard: React.FC<BalanceCardProps> = ({
@@ -12,7 +13,9 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
   balance,
   currency = "$",
   provider = "Digital Wallet",
+  accountType,
 }) => {
+  console.log(accountType)
   return (
     <div
       className="relative rounded-2xl p-6 shadow-2xl mb-8 overflow-hidden
@@ -45,7 +48,9 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
 
         {/* Card Footer */}
         <div className="flex justify-between items-end mt-12">
-          <p className="font-mono text-xl tracking-wider opacity-80">••••••••••••••••</p>
+          <p className="font-mono text-xl tracking-wider opacity-80">
+            {accountType === "agent" ? "Agent Account" : "Personal Account"}
+          </p>
           <div className="text-right">
             <p className="text-xs opacity-70">Powered by</p>
             <p className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
