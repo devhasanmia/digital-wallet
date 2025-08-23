@@ -46,8 +46,12 @@ const router = createBrowserRouter([
     },
     {
         path: "/agent",
-        element: <AgentDashboard />
+        element: <ProtectedRoute role="agent">
+            <AgentDashboard />
+        </ProtectedRoute>
+
     },
+
     {
         path: "/admin",
         element: <AdminDashboard />
