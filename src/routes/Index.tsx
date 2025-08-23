@@ -9,6 +9,8 @@ import AdminDashboard from "../components/layouts/AdminLayout";
 import ProtectedRoute from "../components/layouts/ProtecctedRoute";
 import AccessDenied from "../pages/AccessDenied";
 import UserLayout from "../components/layouts/UserLayout";
+import Profile from "../components/ui/Profile";
+import UserDashboard from "../components/layouts/Users/UserDashboard";
 
 const router = createBrowserRouter([
     {
@@ -38,25 +40,32 @@ const router = createBrowserRouter([
         element: <MFSDashboard />,
     },
     {
-        path: "/users",
+        path: "/user/dashboard",
         element: <ProtectedRoute role="user">
             <UserLayout />
-        </ProtectedRoute>
-
+        </ProtectedRoute>,
+        children:[
+            {
+                path: "",
+                element: <UserDashboard/>
+            },
+            {
+                path: "profile",
+                element: <Profile/>
+            }
+        ]
     },
     {
-        path: "/agent",
+        path: "/agent/dashboard",
         element: <ProtectedRoute role="agent">
             <AgentDashboard />
         </ProtectedRoute>
 
     },
-
     {
         path: "/admin",
         element: <AdminDashboard />
     }
-
 ]);
 
 

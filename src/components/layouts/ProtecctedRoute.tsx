@@ -11,6 +11,7 @@ const ProtectedRoute = ({ children, role }: TProtectedRoute) => {
     const { data: user, isLoading } = useProfileQuery(undefined, {
         refetchOnMountOrArgChange: true,
     });
+    console.log(user)
 
     if (isLoading) return null;
 

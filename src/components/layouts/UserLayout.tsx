@@ -1,29 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Joyride, { STATUS } from "react-joyride";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-import BalanceCard from "../ui/BalanceCard";
 import Header from "../ui/Header";
-import { useGetMytransactionsQuery, useProfileQuery, useWalletQuery } from "../../redux/features/auth/authApi";
-import BalanceCardSkeleton from "../Skeleton/BalanceCardSkeleton";
+import { useProfileQuery } from "../../redux/features/auth/authApi";
 import HeaderSkeleton from "../Skeleton/HeaderSkeleton";
-import TransactionHistory from "../ui/TransactionsTable";
-import QuickActions from "../ui/QuickActions";
-import SendMoneyForm from "../ui/SendMoney";
-import WithdrawForm from "../ui/WithdrawForm";
-import ChartCard from "../ui/ChartCard";
-import { computeExpenseData, computeWeeklyData } from "../../utils/chartUtils";
+
+import { Outlet } from "react-router";
 
 export default function Dashboard() {
   const [isDarkMode, setDarkMode] = useState(false);
@@ -48,20 +29,7 @@ export default function Dashboard() {
     }, 300);
   };
 
-  const { data: profile, isLoading: profileLoading } = useProfileQuery("");
-  const username = profile?.data?.name || "";
-  const accountType = profile?.data?.role;
-  const { data: wallet, isLoading: walletLoading } = useWalletQuery("");
-  const { data: transactions } = useGetMytransactionsQuery("");
-  const weeklyChartData = React.useMemo(() => {
-        if (!transactions?.data) return [];
-        return computeWeeklyData(transactions.data, username);
-    }, [transactions, username]);
-
-    const expenseData = React.useMemo(() => {
-        if (!transactions?.data) return [];
-        return computeExpenseData(transactions.data);
-    }, [transactions]);
+  const { isLoading: profileLoading } = useProfileQuery("");
   return (
     <div className={isDarkMode ? "dark" : ""}>
       <Joyride
@@ -88,24 +56,7 @@ export default function Dashboard() {
           ) : (
             <Header isDarkMode={isDarkMode} setDarkMode={setDarkMode} onRestartTour={restartTour} />
           )}
-
-          {/* Balance Card */}
-          {walletLoading ? (
-            <BalanceCardSkeleton />
-          ) : (
-            <BalanceCard balance={wallet?.data?.balance} currency="৳" provider="Digital Wallet" accountType={accountType} watermark={username} />
-          )}
-
-          {/* Quick Actions */}
-          <QuickActions show={["send", "withdraw"]} modals={{ send: <SendMoneyForm />, withdraw: <WithdrawForm /> }} />
-
-          {/* Charts */}
-          <div id="charts-section" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <ChartCard title="Weekly Spending" type="bar" data={weeklyChartData} dataKey="amount" />
-            <ChartCard title="Expense Breakdown" type="pie" data={expenseData} dataKey="value" nameKey="name" />
-          </div>
-          {/* Transaction History */}
-          <TransactionHistory transactions={transactions?.data || []} currentUserName={username} />
+          <Outlet />
         </div>
       </div>
     </div>

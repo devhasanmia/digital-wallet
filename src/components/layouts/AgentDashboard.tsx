@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Joyride, { STATUS } from "react-joyride";
-import {
-    ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell,
-} from "recharts";
 import BalanceCard from "../ui/BalanceCard";
 import Header from "../ui/Header";
 import { useGetMytransactionsQuery, useProfileQuery, useWalletQuery } from "../../redux/features/auth/authApi";
@@ -15,24 +12,18 @@ import WithdrawForm from "../ui/WithdrawForm";
 import ChartCard from "../ui/ChartCard";
 import { computeExpenseData, computeWeeklyData } from "../../utils/chartUtils";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF"];
-
-
 export default function Dashboard() {
     const [isDarkMode, setDarkMode] = useState(false);
     const [runTour, setRunTour] = useState(false);
-
     useEffect(() => {
         if (!localStorage.getItem('digitalWalletTourCompleted')) setRunTour(true);
     }, []);
-
     const handleJoyrideCallback = (data: any) => {
         if ([STATUS.FINISHED, STATUS.SKIPPED].includes(data.status)) {
             setRunTour(false);
             localStorage.setItem('digitalWalletTourCompleted', 'true');
         }
     };
-
     const restartTour = () => {
         setRunTour(false);
         setTimeout(() => {
@@ -40,7 +31,6 @@ export default function Dashboard() {
             setRunTour(true);
         }, 300);
     };
-
     const { data: profile, isLoading: profileLoading } = useProfileQuery("");
     const username = profile?.data?.name || "";
     const accountType = profile?.data?.role;
@@ -82,14 +72,12 @@ export default function Dashboard() {
                     {profileLoading ? <HeaderSkeleton /> :
                         <Header isDarkMode={isDarkMode} setDarkMode={setDarkMode} onRestartTour={restartTour} />
                     }
-
                     {/* Balance Card */}
                     {walletLoading ? (
                         <BalanceCardSkeleton />
                     ) : (
                         <BalanceCard balance={wallet?.data?.balance} currency="৳" provider="Digital Wallet" accountType={accountType} watermark={username} />
                     )}
-
                     {/* Quick Actions */}
                     <QuickActions
                         show={["cashin", "withdraw"]}

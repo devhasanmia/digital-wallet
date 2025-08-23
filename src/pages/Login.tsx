@@ -1,11 +1,11 @@
-import { Mail, Lock, Phone } from "lucide-react";
+import { Lock, Phone } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import LabeledInput from "../components/ui/InputWithLabel";
 import PrimaryButton from "../components/ui/PrimaryButton";
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginMutation } from "../redux/features/auth/authApi";
+import { useLoginMutation, useProfileQuery } from "../redux/features/auth/authApi";
 import { toast } from "sonner";
 
 
@@ -21,6 +21,11 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const Login = () => {
+  const { data: user, isLoading } = useProfileQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+
+
   const {
     register,
     handleSubmit,
@@ -36,6 +41,14 @@ const Login = () => {
     try {
       const res = await login(data).unwrap();
       toast.success(res?.message || "Login successful!");
+      // Redirect based on role
+      if (res?.data?.role === "admin") {
+        return <Navigate to="/admin/dashboard" replace />;
+      } else if (res?.data?.role === "agent") {
+        return <Navigate to="/agent/dashboard" replace />;
+      } else if (res?.data?.role === "user") {
+        return <Navigate to="/user/dashboard" replace />;
+      }
     } catch (error: any) {
       toast.error(error?.data?.message || "Login failed. Please try again.");
     }
@@ -53,7 +66,19 @@ const Login = () => {
       setValue("password", "admin1234");
     }
   };
-
+  if (isLoading) {
+    return <p className="text-center">Loading...</p>;
+  }
+  if (user?.data?.role === "admin") {
+    return <Navigate to="/admin/dashboard" replace />;
+  } else if (user?.data?.role === "agent") {
+    return <Navigate to="/agent/dashboard" replace />;
+  } else if (user?.data?.role === "user") {
+    return <Navigate to="/user/dashboard" replace />;
+  }
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
       <div className="w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
