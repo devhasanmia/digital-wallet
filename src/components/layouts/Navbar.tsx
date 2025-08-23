@@ -36,6 +36,7 @@ const Navbar: React.FC = () => {
     if (role === "agent") return "/agent/dashboard";
     return "/user/dashboard";
   };
+  
   const [logout] = useLogoutMutation();
   const handleLogout = async () => {
     try {
@@ -58,7 +59,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.svg" alt="PayWallet Logo" className="h-8 w-auto" />
+            <img src="/logo.svg" alt="Digital Wallet" className="h-8 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}

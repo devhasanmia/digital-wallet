@@ -1,22 +1,22 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { Phone, DollarSign, StickyNote, ArrowUp } from "lucide-react";
-import LabeledInput from "./InputWithLabel";
-import PrimaryButton from "./PrimaryButton";
+import { Phone, DollarSign, StickyNote, ArrowDownCircle } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useWithdrawMutation } from "../../redux/features/auth/authApi";
 import { toast } from "sonner";
+import LabeledInput from "../../ui/InputWithLabel";
+import PrimaryButton from "../../ui/PrimaryButton";
+import { useCashInMutation } from "../../../redux/features/auth/authApi";
 
-export interface IWithdrawPayload {
-    agentPhone: string;
+export interface ICashInPayload {
+    receiverPhone: string;
     amount: number;
     note?: string;
 }
 
-const WithdrawPayloadSchema = z.object({
-    agentPhone: z
-        .string({ message: "user phone is required" })
-        .min(1, { message: "user phone is required" })
+const CashInSchema = z.object({
+    receiverPhone: z
+        .string({ message: "Receiver phone is required" })
+        .min(1, { message: "Receiver phone is required" })
         .regex(/^01\d{9}$/, {
             message: "Phone number must be 11 digits and start with 01",
         }),
@@ -29,30 +29,30 @@ const WithdrawPayloadSchema = z.object({
     note: z.string().optional(),
 });
 
-type WithdrawFormInputs = z.infer<typeof WithdrawPayloadSchema>;
+type CashInFormInputs = z.infer<typeof CashInSchema>;
 
-const WithdrawForm = () => {
-    const [withdraw] = useWithdrawMutation();
+const CashInForm = () => {
+    const [cashIn] = useCashInMutation();
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<WithdrawFormInputs>({
-        resolver: zodResolver(WithdrawPayloadSchema),
+    } = useForm<CashInFormInputs>({
+        resolver: zodResolver(CashInSchema),
     });
 
-    const onSubmit: SubmitHandler<WithdrawFormInputs> = async (data) => {
+    const onSubmit: SubmitHandler<CashInFormInputs> = async (data) => {
         try {
             const payload = {
                 ...data,
                 amount: Number(data.amount),
             };
-            const res = await withdraw(payload).unwrap();
-            toast.success(res?.message || "Withdrawal successful!");
+            const res = await cashIn(payload).unwrap();
+            toast.success(res?.message || "Cash In successful!");
         } catch (error: any) {
             toast.error(
-                error?.data?.message || "Failed to withdraw. Please try again."
+                error?.data?.message || "Cash In failed. Please try again."
             );
         }
     };
@@ -63,12 +63,12 @@ const WithdrawForm = () => {
             className="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-2xl"
         >
             <LabeledInput
-                label="User Phone"
-                name="agentPhone"
-                placeholder="017XXXXXXXX"
+                label="Receiver Phone Number"
+                name="receiverPhone"
+                placeholder="01XXXXXXXXX"
                 icon={<Phone size={16} className="text-blue-500" />}
                 register={register}
-                error={errors.agentPhone?.message}
+                error={errors.receiverPhone?.message}
             />
 
             <LabeledInput
@@ -90,11 +90,11 @@ const WithdrawForm = () => {
                 error={errors.note?.message}
             />
 
-            <PrimaryButton type="submit" icon={<ArrowUp />}>
-                Withdraw
+            <PrimaryButton type="submit" icon={<ArrowDownCircle />}>
+                Cash In
             </PrimaryButton>
         </form>
     );
 };
 
-export default WithdrawForm;
+export default CashInForm;

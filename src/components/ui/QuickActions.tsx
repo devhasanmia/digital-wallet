@@ -27,7 +27,7 @@ const allActions: Action[] = [
 
 type QuickActionsProps = {
     show?: ActionKey[];
-    modals?: Partial<Record<ActionKey, ReactNode>>; // এখানে modal content আসবে
+    modals?: Partial<Record<ActionKey, ReactNode>>;
 };
 
 const QuickActions: React.FC<QuickActionsProps> = ({ show, modals }) => {
@@ -59,7 +59,6 @@ const QuickActions: React.FC<QuickActionsProps> = ({ show, modals }) => {
                             <DialogHeader>
                                 <DialogTitle>{action.label}</DialogTitle>
                             </DialogHeader>
-                            {/* প্রতিটা action এর জন্য content তুমি বাইরে থেকে পাঠাতে পারবে */}
                             <div className="mt-4">
                                 {modals?.[action.key] ?? (
                                     <p className="text-sm text-gray-600 dark:text-gray-300">

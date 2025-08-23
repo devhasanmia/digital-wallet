@@ -3,14 +3,14 @@ import PublicLayout from "../components/layouts/PublicLayout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import MFSDashboard from "../components/layouts/UserLayout";
-import AgentDashboard from "../components/layouts/AgentDashboard";
 import AdminDashboard from "../components/layouts/AdminLayout";
 import ProtectedRoute from "../components/layouts/ProtecctedRoute";
 import AccessDenied from "../pages/AccessDenied";
-import UserLayout from "../components/layouts/UserLayout";
 import Profile from "../components/ui/Profile";
 import UserDashboard from "../components/layouts/Users/UserDashboard";
+import AgentLayout from "../components/layouts/Agent/AgentLayout";
+import AgentDashboard from "../components/layouts/Agent/AgentDashboard";
+import UserLayout from "../components/layouts/Users/UserLayout";
 
 const router = createBrowserRouter([
     {
@@ -35,32 +35,38 @@ const router = createBrowserRouter([
             }
         ]
     },
-    {
-        path: "/user",
-        element: <MFSDashboard />,
-    },
+
     {
         path: "/user/dashboard",
         element: <ProtectedRoute role="user">
             <UserLayout />
         </ProtectedRoute>,
-        children:[
+        children: [
             {
                 path: "",
-                element: <UserDashboard/>
+                element: <UserDashboard />
             },
             {
                 path: "profile",
-                element: <Profile/>
+                element: <Profile />
             }
         ]
     },
     {
         path: "/agent/dashboard",
         element: <ProtectedRoute role="agent">
-            <AgentDashboard />
-        </ProtectedRoute>
-
+            <AgentLayout />
+        </ProtectedRoute>,
+        children: [
+            {
+                path: "",
+                element: <AgentDashboard />
+            },
+            {
+                path: "profile",
+                element: <Profile />
+            }
+        ]
     },
     {
         path: "/admin",

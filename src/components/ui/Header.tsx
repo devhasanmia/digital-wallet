@@ -16,6 +16,14 @@ const Header: React.FC<HeaderProps> = ({
   onRestartTour,
 }) => {
   const { data: profile } = useProfileQuery("");
+
+  const getDashboardPath = () => {
+    const role = profile?.data?.role;
+    if (role === "admin") return "/admin/dashboard/profile";
+    if (role === "agent") return "/agent/dashboard/profile";
+    return "/user/dashboard/profile";
+  };
+
   const profileImage =
     profile?.data?.picture ||
     "https://res.cloudinary.com/deicntkum/image/upload/v1755900488/man-user-circle-icon_wrrmd6.png";
@@ -23,7 +31,6 @@ const Header: React.FC<HeaderProps> = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // বাইরে ক্লিক করলে dropdown বন্ধ হবে
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -36,7 +43,9 @@ const Header: React.FC<HeaderProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
   const [logout] = useLogoutMutation();
+
   const handleLogout = async () => {
     try {
       await logout({}).unwrap();
@@ -45,10 +54,11 @@ const Header: React.FC<HeaderProps> = ({
       console.error("Logout failed:", err);
     }
   };
+
   return (
     <header className="flex justify-between items-center mb-8 relative">
       <Link to="/" className="flex items-center space-x-2">
-        <img src="/logo.svg" alt="PayWallet Logo" className="h-8 w-auto" />
+        <img src="/logo.svg" alt="Digital Wallet" className="h-8 w-auto" />
       </Link>
 
       <div className="flex items-center gap-2 sm:gap-4">
@@ -85,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({
           {menuOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden z-50">
               <Link
-                to="/user/dashboard/profile"
+                to={getDashboardPath()}
                 className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setMenuOpen(false)}
               >

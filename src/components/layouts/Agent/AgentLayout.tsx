@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import Joyride, { STATUS } from "react-joyride";
-import Header from "../ui/Header";
-import { useProfileQuery } from "../../redux/features/auth/authApi";
-import HeaderSkeleton from "../Skeleton/HeaderSkeleton";
+
 
 import { Outlet } from "react-router";
+import { useProfileQuery } from "../../../redux/features/auth/authApi";
+import HeaderSkeleton from "../../Skeleton/HeaderSkeleton";
+import Header from "../../ui/Header";
 
-export default function Dashboard() {
+const AgentLayout = () => {
   const [isDarkMode, setDarkMode] = useState(false);
   const [runTour, setRunTour] = useState(false);
 
@@ -62,3 +63,6 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
+export default AgentLayout;

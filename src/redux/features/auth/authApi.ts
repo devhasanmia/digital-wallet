@@ -52,7 +52,15 @@ export const AuthApi = RootApi.injectEndpoints({
                 method: "POST",
                 data: data
             }),
-            invalidatesTags: ["wallet"]
+            invalidatesTags: ["wallet", "transactions"]
+        }),
+        cashIn: builder.mutation({
+            query: (data) => ({
+                url: "/agent/cash-in",
+                method: "POST",
+                data: data
+            }),
+            invalidatesTags: ["wallet", "transactions"]
         }),
         withdraw: builder.mutation({
             query: (data) => ({
@@ -60,7 +68,15 @@ export const AuthApi = RootApi.injectEndpoints({
                 method: "POST",
                 data: data
             }),
-            invalidatesTags: ["wallet"]
+            invalidatesTags: ["wallet", "transactions"]
+        }),
+        withdrawUserWallet: builder.mutation({
+            query: (data) => ({
+                url: "/agent/withdraw",
+                method: "POST",
+                data: data
+            }),
+            invalidatesTags: ["wallet", "transactions"]
         }),
         profileUpdate: builder.mutation({
             query: (data) => ({
@@ -74,4 +90,4 @@ export const AuthApi = RootApi.injectEndpoints({
     })
 });
 
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useProfileUpdateMutation, useProfileQuery, useWithdrawMutation, useGetMytransactionsQuery, useWalletQuery, useSendMoneyMutation } = AuthApi;
+export const { useRegisterMutation, useLoginMutation, useWithdrawUserWalletMutation, useCashInMutation, useLogoutMutation, useProfileUpdateMutation, useProfileQuery, useWithdrawMutation, useGetMytransactionsQuery, useWalletQuery, useSendMoneyMutation } = AuthApi;

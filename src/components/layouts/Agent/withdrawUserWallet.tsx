@@ -1,20 +1,20 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Phone, DollarSign, StickyNote, ArrowUp } from "lucide-react";
-import LabeledInput from "./InputWithLabel";
-import PrimaryButton from "./PrimaryButton";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useWithdrawMutation } from "../../redux/features/auth/authApi";
 import { toast } from "sonner";
+import { useWithdrawUserWalletMutation } from "../../../redux/features/auth/authApi";
+import LabeledInput from "../../ui/InputWithLabel";
+import PrimaryButton from "../../ui/PrimaryButton";
 
 export interface IWithdrawPayload {
-    agentPhone: string;
+    receiverPhone: string;
     amount: number;
     note?: string;
 }
 
 const WithdrawPayloadSchema = z.object({
-    agentPhone: z
+    receiverPhone: z
         .string({ message: "user phone is required" })
         .min(1, { message: "user phone is required" })
         .regex(/^01\d{9}$/, {
@@ -31,8 +31,8 @@ const WithdrawPayloadSchema = z.object({
 
 type WithdrawFormInputs = z.infer<typeof WithdrawPayloadSchema>;
 
-const WithdrawForm = () => {
-    const [withdraw] = useWithdrawMutation();
+const WithdrawUserWalletForm = () => {
+    const [withdraw] = useWithdrawUserWalletMutation();
 
     const {
         register,
@@ -64,11 +64,11 @@ const WithdrawForm = () => {
         >
             <LabeledInput
                 label="User Phone"
-                name="agentPhone"
+                name="receiverPhone"
                 placeholder="017XXXXXXXX"
                 icon={<Phone size={16} className="text-blue-500" />}
                 register={register}
-                error={errors.agentPhone?.message}
+                error={errors.receiverPhone?.message}
             />
 
             <LabeledInput
@@ -91,10 +91,10 @@ const WithdrawForm = () => {
             />
 
             <PrimaryButton type="submit" icon={<ArrowUp />}>
-                Withdraw
+                Withdraw monay from User's Wallet
             </PrimaryButton>
         </form>
     );
 };
 
-export default WithdrawForm;
+export default WithdrawUserWalletForm;
