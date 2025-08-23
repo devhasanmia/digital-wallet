@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
-import { useProfileQuery } from '../../redux/features/auth/authApi';
+import { useLogoutMutation, useProfileQuery } from '../../redux/features/auth/authApi';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,19 +36,23 @@ const Navbar: React.FC = () => {
     if (role === "agent") return "/agent/dashboard";
     return "/user/dashboard";
   };
-
-  const handleLogout = () => {
-    // 🔹 এখানে logout logic লিখতে হবে (API call / redux action ইত্যাদি)
-    console.log("Logging out...");
+  const [logout] = useLogoutMutation();
+  const handleLogout = async () => {
+    try {
+      await logout({}).unwrap();
+      setShowDropdown(false);
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-lg'
-          : 'bg-white/95'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-white/95 backdrop-blur-md shadow-lg'
+        : 'bg-white/95'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -63,11 +67,10 @@ const Navbar: React.FC = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`text-sm font-medium transition-colors duration-200 hover:text-blue-600 ${
-                  isActiveLink(item.path)
-                    ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
-                    : 'text-gray-700'
-                }`}
+                className={`text-sm font-medium transition-colors duration-200 hover:text-blue-600 ${isActiveLink(item.path)
+                  ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
+                  : 'text-gray-700'
+                  }`}
               >
                 {item.name}
               </Link>
@@ -102,7 +105,7 @@ const Navbar: React.FC = () => {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center cursor-pointer gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <LogOut className="w-4 h-4" />
                       Logout
@@ -131,9 +134,8 @@ const Navbar: React.FC = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors duration-200 ${
-              isScrolled ? 'text-gray-700' : 'text-gray-700'
-            }`}
+            className={`md:hidden p-2 rounded-lg transition-colors duration-200 ${isScrolled ? 'text-gray-700' : 'text-gray-700'
+              }`}
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -147,11 +149,10 @@ const Navbar: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`block px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                    isActiveLink(item.path)
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
-                  }`}
+                  className={`block px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${isActiveLink(item.path)
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                    }`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
@@ -176,7 +177,7 @@ const Navbar: React.FC = () => {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors duration-200"
+                    className="block w-full text-left cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors duration-200"
                   >
                     Logout
                   </button>

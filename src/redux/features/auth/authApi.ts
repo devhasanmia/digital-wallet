@@ -18,6 +18,13 @@ export const AuthApi = RootApi.injectEndpoints({
             }),
             invalidatesTags: ["user"]
         }),
+        logout: builder.mutation({
+            query: () => ({
+                url: "/auth/logout",
+                method: "POST",
+            }),
+            invalidatesTags: ["user"]
+        }),
         profile: builder.query({
             query: () => ({
                 url: "/user/profile",
@@ -54,9 +61,17 @@ export const AuthApi = RootApi.injectEndpoints({
                 data: data
             }),
             invalidatesTags: ["wallet"]
+        }),
+        profileUpdate: builder.mutation({
+            query: (data) => ({
+                url: "/user/profile-update",
+                method: "PUT",
+                data: data
+            }),
+            invalidatesTags: ["user"]
         })
 
-    }),
+    })
 });
 
-export const { useRegisterMutation, useLoginMutation, useProfileQuery,useWithdrawMutation, useGetMytransactionsQuery, useWalletQuery, useSendMoneyMutation } = AuthApi;
+export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useProfileUpdateMutation, useProfileQuery, useWithdrawMutation, useGetMytransactionsQuery, useWalletQuery, useSendMoneyMutation } = AuthApi;

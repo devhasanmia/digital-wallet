@@ -1,7 +1,7 @@
 import { Bell, Settings, Sun, Moon, LogOut, User } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
-import { useProfileQuery } from "../../redux/features/auth/authApi";
+import { useLogoutMutation, useProfileQuery } from "../../redux/features/auth/authApi";
 
 type HeaderProps = {
   isDarkMode: boolean;
@@ -14,7 +14,6 @@ const Header: React.FC<HeaderProps> = ({
   isDarkMode,
   setDarkMode,
   onRestartTour,
-  onLogout,
 }) => {
   const { data: profile } = useProfileQuery("");
   const profileImage =
@@ -37,6 +36,15 @@ const Header: React.FC<HeaderProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  const [logout] = useLogoutMutation();
+  const handleLogout = async () => {
+    try {
+      await logout({}).unwrap();
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
   return (
     <header className="flex justify-between items-center mb-8 relative">
       <Link to="/" className="flex items-center space-x-2">
@@ -84,11 +92,8 @@ const Header: React.FC<HeaderProps> = ({
                 <User size={16} /> Profile
               </Link>
               <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  onLogout?.();
-                }}
-                className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm hover:bg-red-50 dark:hover:bg-gray-700 text-red-500"
+                onClick={handleLogout}
+                className="w-full text-left flex items-center cursor-pointer gap-2 px-4 py-2 text-sm hover:bg-red-50 dark:hover:bg-gray-700 text-red-500"
               >
                 <LogOut size={16} /> Logout
               </button>
