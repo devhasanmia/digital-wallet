@@ -3,7 +3,6 @@ import PublicLayout from "../components/layouts/PublicLayout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import AdminDashboard from "../components/layouts/AdminLayout";
 import ProtectedRoute from "../components/layouts/ProtecctedRoute";
 import AccessDenied from "../pages/AccessDenied";
 import Profile from "../components/ui/Profile";
@@ -11,6 +10,9 @@ import UserDashboard from "../components/layouts/Users/UserDashboard";
 import AgentLayout from "../components/layouts/Agent/AgentLayout";
 import AgentDashboard from "../components/layouts/Agent/AgentDashboard";
 import UserLayout from "../components/layouts/Users/UserLayout";
+import AdminDashboard from "../components/layouts/Admin/AdminLayout";
+import Dashboard from "../components/layouts/Admin/Dashboard";
+import Users from "../components/layouts/Admin/Users";
 
 const router = createBrowserRouter([
     {
@@ -69,8 +71,20 @@ const router = createBrowserRouter([
         ]
     },
     {
-        path: "/admin",
-        element: <AdminDashboard />
+        path: "/admin/dashboard",
+        element: <ProtectedRoute role="admin">
+            <AdminDashboard />
+        </ProtectedRoute>,
+        children: [
+            {
+                path: "",
+                element: <Dashboard />
+            },
+            {
+                path: "users",
+                element: <Users />
+            }
+        ]
     }
 ]);
 

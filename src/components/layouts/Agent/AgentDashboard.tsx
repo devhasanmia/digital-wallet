@@ -4,8 +4,6 @@ import { computeExpenseData, computeWeeklyData } from '../../../utils/chartUtils
 import BalanceCardSkeleton from '../../Skeleton/BalanceCardSkeleton';
 import BalanceCard from '../../ui/BalanceCard';
 import QuickActions from '../../ui/QuickActions';
-import SendMoneyForm from '../../ui/SendMoney';
-import WithdrawForm from '../../ui/WithdrawForm';
 import TransactionHistory from '../../ui/TransactionsTable';
 import ChartCard from '../../ui/ChartCard';
 import CashInForm from './CashIn';
@@ -44,7 +42,6 @@ const AgentDashboard = () => {
             </div>
             {/* Transaction History */}
             <TransactionHistory transactions={transactions?.data || []} currentUserName={username} />
-
         </>)
 }
 

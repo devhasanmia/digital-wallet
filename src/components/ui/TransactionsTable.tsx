@@ -4,12 +4,18 @@ import type { JSX } from "react/jsx-runtime";
 
 export type Transaction = {
   _id: string;
-  type: "send_money" | "deposit" | "withdraw" | "cash_in" | "cash_out" | "add-money";
+  type:
+    | "send_money"
+    | "deposit"
+    | "withdraw"
+    | "cash_in"
+    | "cash_out"
+    | "add-money";
   amount: number;
-  from: { name: string; phone: string };
-  to: { name: string; phone: string };
+  from?: { name: string; phone: string } | null; // optional + nullable
+  to?: { name: string; phone: string } | null;   // optional + nullable
   status: string;
-  note: string;
+  note?: string | null;
   createdAt: string;
 };
 
@@ -36,12 +42,12 @@ const getTransactionIcon = (type: string) => {
 };
 
 // Determine outgoing/incoming
-const isOutgoing = (tx: Transaction, currentUserName: string) => {
+const isOutgoing = (tx: Transaction, currentUserName: string): boolean => {
   switch (tx.type) {
     case "send_money":
     case "withdraw":
     case "cash_out":
-      return tx.from.name === currentUserName;
+      return tx.from?.name === currentUserName;
     case "deposit":
     case "cash_in":
     case "add-money":
@@ -51,10 +57,15 @@ const isOutgoing = (tx: Transaction, currentUserName: string) => {
   }
 };
 
-const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions, currentUserName }) => {
+const TransactionHistory: React.FC<TransactionHistoryProps> = ({
+  transactions,
+  currentUserName,
+}) => {
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-      <h3 className="font-bold text-lg mb-4 text-gray-800 dark:text-gray-100">Transaction History</h3>
+      <h3 className="font-bold text-lg mb-4 text-gray-800 dark:text-gray-100">
+        Transaction History
+      </h3>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[600px]">
@@ -77,9 +88,11 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions, c
                   <td className="p-3 font-medium text-gray-800 dark:text-gray-100 flex items-center gap-3">
                     {getTransactionIcon(tx.type)}
                     <div className="flex flex-col">
-                      <span className="font-semibold">{tx.note || tx.type.replace("_", " ")}</span>
+                      <span className="font-semibold">
+                        {tx.note || tx.type.replace("_", " ")}
+                      </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {tx.from.name} → {tx.to.name}
+                        {tx.from?.name || "Unknown"} → {tx.to?.name || "Unknown"}
                       </span>
                     </div>
                   </td>
@@ -91,10 +104,14 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions, c
                   </td>
                   <td
                     className={`p-3 text-right font-bold ${
-                      outgoing ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"
+                      outgoing
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-green-600 dark:text-green-400"
                     }`}
                   >
-                    {outgoing ? `- ৳${tx.amount.toFixed(2)}` : `+ ৳${tx.amount.toFixed(2)}`}
+                    {outgoing
+                      ? `- ৳${tx.amount.toFixed(2)}`
+                      : `+ ৳${tx.amount.toFixed(2)}`}
                   </td>
                 </tr>
               );
