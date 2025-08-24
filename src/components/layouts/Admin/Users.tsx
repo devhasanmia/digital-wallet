@@ -12,7 +12,7 @@ const Users = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
-  const perPage = 5; // প্রতি পেজে কয়জন দেখাবে
+  const perPage = 5;
 
   const handleBlockUnblock = async (id: string) => {
     try {

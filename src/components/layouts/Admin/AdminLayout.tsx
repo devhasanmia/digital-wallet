@@ -38,7 +38,7 @@ export default function AdminDashboard() {
           </RouterNavLink>
 
           <RouterNavLink
-            to="/agents"
+            to="/admin/dashboard/agents"
             onClick={() => setSidebarOpen(false)}
             className="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100"
           >
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
           </RouterNavLink>
 
           <RouterNavLink
-            to="/transactions"
+            to="/admin/dashboard/transactions"
             onClick={() => setSidebarOpen(false)}
             className="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100"
           >

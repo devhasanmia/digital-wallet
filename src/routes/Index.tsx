@@ -13,6 +13,8 @@ import UserLayout from "../components/layouts/Users/UserLayout";
 import AdminDashboard from "../components/layouts/Admin/AdminLayout";
 import Dashboard from "../components/layouts/Admin/Dashboard";
 import Users from "../components/layouts/Admin/Users";
+import Agents from "../components/layouts/Admin/Agents";
+import AllTransaction from "../components/layouts/Admin/AllTransaction";
 
 const router = createBrowserRouter([
     {
@@ -83,6 +85,14 @@ const router = createBrowserRouter([
             {
                 path: "users",
                 element: <Users />
+            },
+            {
+                path: "agents",
+                element: <Agents />
+            },
+            {
+                path: "transactions",
+                element: <AllTransaction/>
             }
         ]
     }
