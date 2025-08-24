@@ -1,5 +1,7 @@
+import { RefreshCcw } from "lucide-react";
 import {
     useGetAllAgentsQuery,
+    useUpdateAgentStatusMutation,
     useUserBlockMutation
 } from "../../../redux/features/admin/AdminApi";
 import { useState } from "react";
@@ -7,6 +9,7 @@ import { useState } from "react";
 const Agents = () => {
     const { data, error, isLoading } = useGetAllAgentsQuery("");
     const [userBlock] = useUserBlockMutation();
+    const [updateAgentStatus] = useUpdateAgentStatusMutation()
 
     // Local States
     const [search, setSearch] = useState("");
@@ -117,6 +120,23 @@ const Agents = () => {
                       `}>
                                                 {user.approvalStatus}
                                             </span>
+                                            {/* Update Approval Status */}
+                                            <div className="mt-1">
+                                                {/* Toogle Button */}
+                                                <button
+                                                    onClick={async () => {
+                                                        try {
+                                                            await updateAgentStatus(user._id).unwrap();
+                                                        } catch (err) {
+                                                            console.error("Status update failed:", err);
+                                                        }
+                                                    }}
+                                                    className="px-3 py-1 mt-2 bg-indigo-500 text-white text-xs rounded hover:bg-indigo-600"
+                                                >
+                                                    <RefreshCcw />
+                                                </button>
+                                            </div>
+
                                         </td>
 
                                         {/* Blocked Status */}

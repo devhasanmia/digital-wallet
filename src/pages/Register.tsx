@@ -2,7 +2,7 @@ import { Mail, Lock, User, Phone, ShieldCheck } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import LabeledInput from "../components/ui/InputWithLabel";
-import { Link } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterMutation } from "../redux/features/auth/authApi";
@@ -35,10 +35,13 @@ const Register = () => {
 
   const [registration] = useRegisterMutation()
 
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
     try {
-      const res = await registration(data).unwrap()
+      const res = await registration(data).unwrap();
       toast.success(res?.message || "Registration successful!");
+      navigate("/login", { replace: true });
     } catch (error: any) {
       toast.error(error?.data?.message || "Registration failed. Please try again.");
     }

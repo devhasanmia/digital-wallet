@@ -37,13 +37,16 @@ export const AdminApi = RootApi.injectEndpoints({
     }),
 
     updateAgentStatus: builder.mutation({
-      query: ({ agentId, body }: { agentId: string; body: any }) => ({
-        url: `/admin/agents/${agentId}`,
-        method: "PATCH",
-        body,
-      }),
+      query: (agentId) => {
+        return {
+          url: `/admin/agents/${agentId}`,
+          method: "PATCH",
+        };
+      },
       invalidatesTags: ["user"],
     }),
+
+
 
     // Wallets
     getAllWallets: builder.query({

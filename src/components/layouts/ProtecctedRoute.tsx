@@ -1,6 +1,7 @@
 import { Navigate } from "react-router";
 import type { ReactNode } from "react";
-import { useProfileQuery } from "../../redux/features/auth/authApi";
+import { useLogoutMutation, useProfileQuery } from "../../redux/features/auth/authApi";
+import { useEffect } from "react";
 
 type TProtectedRoute = {
     children: ReactNode;
@@ -11,16 +12,34 @@ const ProtectedRoute = ({ children, role }: TProtectedRoute) => {
     const { data: user, isLoading } = useProfileQuery(undefined, {
         refetchOnMountOrArgChange: true,
     });
-    console.log(user)
+
+    const [logout] = useLogoutMutation();
+
+    useEffect(() => {
+        const handleLogout = async () => {
+            try {
+                await logout({}).unwrap();
+                window.location.href = "/";
+            } catch (err) {
+                console.error("Logout failed", err);
+            }
+        };
+
+        if (user?.data?.isBlocked) {
+            handleLogout();
+        }
+    }, [user?.data?.isBlocked]);
 
     if (isLoading) return null;
 
     if (!user) {
         return <Navigate to="/login" replace />;
     }
-    if (role && user?.data.role !== role) {
+
+    if (role && user?.data?.role !== role) {
         return <Navigate to="/access-denied" replace />;
     }
+
     return <>{children}</>;
 };
 

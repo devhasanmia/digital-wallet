@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink as RouterNavLink, Outlet } from "react-router";
 import { Users, UserCheck, ListChecks, Settings, SlidersHorizontal, Menu } from "lucide-react";
 import Header from "../../ui/Header";
