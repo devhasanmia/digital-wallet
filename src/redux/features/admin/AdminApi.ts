@@ -19,6 +19,13 @@ export const AdminApi = RootApi.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    userBlock: builder.mutation({
+      query: (id) => ({
+        url: `/admin/users/${id}`,
+        method: "GET",
+      }),
+      invalidatesTags: ["user"],
+    }),
 
     // Agents
     getAllAgents: builder.query({
@@ -28,6 +35,7 @@ export const AdminApi = RootApi.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+
     updateAgentStatus: builder.mutation({
       query: ({ agentId, body }: { agentId: string; body: any }) => ({
         url: `/admin/agents/${agentId}`,
@@ -72,4 +80,5 @@ export const {
   useGetAllWalletsQuery,
   useToggleWalletBlockMutation,
   useGetAllTransactionsQuery,
+  useUserBlockMutation
 } = AdminApi;
