@@ -15,6 +15,10 @@ import Dashboard from "../components/layouts/Admin/Dashboard";
 import Users from "../components/layouts/Admin/Users";
 import Agents from "../components/layouts/Admin/Agents";
 import AllTransaction from "../components/layouts/Admin/AllTransaction";
+import About from "../pages/About";
+import Features from "../pages/Features";
+import Contact from "../pages/Contact";
+import FAQ from "../pages/FAQ";
 
 const router = createBrowserRouter([
     {
@@ -32,6 +36,22 @@ const router = createBrowserRouter([
             {
                 path: "register",
                 element: <Register />
+            },
+            {
+                path: "about",
+                element: <About/>
+            },
+            {
+                path: "features",
+                element: <Features/>
+            },
+            {
+                path: "contact",
+                element: <Contact/>
+            },
+            {
+                path: "faq",
+                element: <FAQ/>
             },
             {
                 path: "access-denied",

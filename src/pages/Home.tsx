@@ -82,60 +82,7 @@ const Home: React.FC = () => {
               <div className="relative">
                 {/* Phone Mockup */}
                 <div className="bg-gray-900 rounded-3xl p-2 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 w-80 h-96 flex flex-col">
-                    {/* App Header */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center space-x-2">
-                        
-                        <img
-                          src="/logo.svg"
-                          alt="Digital Wallet"
-                          className="h-6 w-auto"
-                        />
-                      </div>
-                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    </div>
-                    
-                    {/* Balance Card */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-4 text-white mb-6">
-                      <p className="text-blue-100 text-sm">Available Balance</p>
-                      <p className="text-2xl font-bold">৳45,280.50</p>
-                    </div>
-                    
-                    {/* Quick Actions */}
-                    <div className="grid grid-cols-2 gap-3 mb-6">
-                      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                        <div className="bg-blue-100 w-8 h-8 rounded-lg flex items-center justify-center mb-2">
-                          <ArrowRight className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <p className="text-xs font-medium text-gray-700">Send Money</p>
-                      </div>
-                      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                        <div className="bg-green-100 w-8 h-8 rounded-lg flex items-center justify-center mb-2">
-                          <CreditCard className="h-4 w-4 text-green-600" />
-                        </div>
-                        <p className="text-xs font-medium text-gray-700">Pay Bills</p>
-                      </div>
-                    </div>
-                    
-                    {/* Recent Transactions */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium text-gray-800">John Doe</p>
-                            <p className="text-xs text-gray-500">Received</p>
-                          </div>
-                        </div>
-                        <p className="text-sm font-semibold text-green-600">+৳2,500</p>
-                      </div>
-                    </div>
-                  </div>
+                  <img src="/ss.png" width={350} alt="" />
                 </div>
                 
                 {/* Floating Elements */}
