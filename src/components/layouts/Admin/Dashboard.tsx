@@ -27,13 +27,11 @@ import {
 
 const COLORS = ["#6366f1", "#34d399", "#f59e0b", "#ef4444", "#3b82f6"];
 
-// helper → মাস বের করা
 const getMonthName = (dateStr: string) => {
   const date = new Date(dateStr);
-  return date.toLocaleString("default", { month: "short" }); // যেমন "Jan", "Feb"
+  return date.toLocaleString("default", { month: "short" }); 
 };
 
-// helper → মাসভিত্তিক সংখ্যা তৈরি
 const aggregateByMonth = (items: any[]) => {
   const map: Record<string, number> = {};
   items.forEach((item) => {
@@ -42,7 +40,6 @@ const aggregateByMonth = (items: any[]) => {
     map[month] = (map[month] || 0) + 1;
   });
 
-  // মাস সাজানো
   return Object.keys(map).map((month) => ({
     month,
     value: map[month],
@@ -54,14 +51,12 @@ const Dashboard: React.FC = () => {
   const { data: agents } = useGetAllAgentsQuery("");
   const { data: transactions } = useGetAllTransactionsQuery("");
 
-  // Volume হিসাব
   const totalVolume =
     transactions?.data?.reduce(
       (acc: number, txn: any) => acc + (txn.amount || 0),
       0
     ) || 0;
 
-  // Transaction type অনুযায়ী Pie chart
   const pieData =
     transactions?.data?.reduce((acc: any[], txn: any) => {
       const existing = acc.find((item) => item.name === txn.type);
@@ -73,12 +68,10 @@ const Dashboard: React.FC = () => {
       return acc;
     }, []) || [];
 
-  // Growth data (users + agents একসাথে)
   const growthData = useMemo(() => {
     const userAgg = aggregateByMonth(users?.data || []);
     const agentAgg = aggregateByMonth(agents?.data || []);
 
-    // merge দুইটা dataset
     const allMonths = Array.from(
       new Set([...userAgg.map((u) => u.month), ...agentAgg.map((a) => a.month)])
     );

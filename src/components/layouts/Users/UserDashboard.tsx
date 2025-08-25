@@ -17,7 +17,7 @@ const UserDashboard = () => {
     const { data: transactions } = useGetMytransactionsQuery("");
     const weeklyChartData = React.useMemo(() => {
         if (!transactions?.data) return [];
-        return computeWeeklyData(transactions.data, username);
+        return computeWeeklyData(transactions.data);
     }, [transactions, username]);
 
     const expenseData = React.useMemo(() => {

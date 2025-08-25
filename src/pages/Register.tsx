@@ -2,7 +2,7 @@ import { Mail, Lock, User, Phone, ShieldCheck } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import LabeledInput from "../components/ui/InputWithLabel";
-import { Link, Navigate, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterMutation } from "../redux/features/auth/authApi";

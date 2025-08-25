@@ -1,4 +1,4 @@
-export const computeWeeklyData = (transactions: any[], username: string) => {
+export const computeWeeklyData = (transactions: any[]) => {
   const data: Record<string, { income: number; expense: number }> = {};
 
   transactions.forEach((tx) => {

@@ -113,6 +113,10 @@ const router = createBrowserRouter([
             {
                 path: "transactions",
                 element: <AllTransaction/>
+            },
+            {
+                path: "profile",
+                element: <Profile/>
             }
         ]
     }

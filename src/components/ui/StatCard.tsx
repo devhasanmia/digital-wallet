@@ -1,12 +1,11 @@
 import React, { type ReactNode } from "react";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 
 interface StatCardProps {
     title: string;
     value: string | number;
     icon: ReactNode;
-    gradientClass?: string; // optional
+    gradientClass?: string; 
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, gradientClass = "bg-indigo-500" }) => {

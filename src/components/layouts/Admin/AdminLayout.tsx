@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink as RouterNavLink, Outlet } from "react-router";
-import { Users, UserCheck, ListChecks, Settings, SlidersHorizontal, Menu } from "lucide-react";
+import { Users, UserCheck, ListChecks, SlidersHorizontal, Menu } from "lucide-react";
 import Header from "../../ui/Header";
 
 export default function AdminDashboard() {
@@ -56,16 +56,7 @@ export default function AdminDashboard() {
           </RouterNavLink>
         </nav>
 
-        <div className="mt-auto">
-          <RouterNavLink
-            to="/settings"
-            onClick={() => setSidebarOpen(false)}
-            className="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100"
-          >
-            <Settings size={20} />
-            System Settings
-          </RouterNavLink>
-        </div>
+        
       </aside>
 
       {/* Sidebar Overlay (Mobile) */}
