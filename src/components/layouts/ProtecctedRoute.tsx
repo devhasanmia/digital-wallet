@@ -19,7 +19,6 @@ const ProtectedRoute = ({ children, role }: TProtectedRoute) => {
         const handleLogout = async () => {
             try {
                 await logout({}).unwrap();
-                window.location.href = "/";
             } catch (err) {
                 console.error("Logout failed", err);
             }

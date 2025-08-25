@@ -7,5 +7,3 @@ export const RootApi = createApi({
   tagTypes: ["user", "wallet", "transactions"],
   endpoints: () => ({}),
 });
-
-

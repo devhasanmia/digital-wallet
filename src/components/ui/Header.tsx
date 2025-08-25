@@ -1,7 +1,10 @@
 import { Bell, Settings, Sun, Moon, LogOut, User } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
-import { useLogoutMutation, useProfileQuery } from "../../redux/features/auth/authApi";
+import {
+  useLogoutMutation,
+  useProfileQuery,
+} from "../../redux/features/auth/authApi";
 
 type HeaderProps = {
   isDarkMode: boolean;
